@@ -1,5 +1,29 @@
 # Website Performance Optimization
 
+###### Project Overview
+
+Project #4 of Udacity's [Front-End Web Developer Nanodegree](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001). 
+The task was to optimize [Cameron's portfolio website](https://github.com/udacity/frontend-nanodegree-mobile-portfolio) to get at least 90 for Mobile and Desktop PageSpeed score for `index.html`. Second task was to optimize views/js/main.js and views/pizza.html to render with a consistent frame-rate at 60fps when scrolling.
+
+###### Preview
+
+Live preview (non-compressed css and js files) available with [GitHub Pages](https://kshpikat.github.io/frontend-nanodegree-mobile-portfolio/).
+Also online [PageSpeed score](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fkshpikat.github.io%2Ffrontend-nanodegree-mobile-portfolio%2F&tab=mobile)
+
+###### Local
+
+###### 1. Get Sources
+
+```
+$ git clone https://github.com/kshpikat/frontend-nanodegree-mobile-portfolio.git
+````
+
+###### 2. Open the application in the browser
+
+```
+<path_to_app>/index.html
+```
+
 ## Part 1: How index.html was optimized for PageSpeed
 
 * images were optimized in Abode Photoshop to have according image size and quality
