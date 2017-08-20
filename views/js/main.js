@@ -1,21 +1,3 @@
-/*
- Welcome to the 60fps project! Your goal is to make Cam's Pizzeria website run
- jank-free at 60 frames per second.
-
- There are two major issues in this code that lead to sub-60fps performance. Can
- you spot and fix both?
-
-
- Built into the code, you'll find a few instances of the User Timing API
- (window.performance), which will be console.log()ing frame rate data into the
- browser console. To learn more about User Timing API, check out:
- http://www.html5rocks.com/en/tutorials/webperformance/usertiming/
-
- Creator:
- Cameron Pittman, Udacity Course Developer
- cameron *at* udacity *dot* com
- */
-
 var movers = [];
 var latestKnownScrollY = 0;
 var ticking = false;
@@ -494,13 +476,14 @@ function updatePositions() {
     window.performance.mark("mark_start_frame");
 
 
-    var items_left = [];
-    for (var i = 0; i < movers.length; i++) {
-        var phase = Math.sin((currentScrollY / 1250) + (i % 5));
-        items_left[i] = movers[i].basicLeft + 100 * phase;
+    var phaseCalc = [];
+    // Moved the phase calculations outside of loop
+    for (var j = 0; j < 5; j++) {
+        phaseCalc.push(Math.sin((currentScrollY / 1250) + j));
     }
+
     for (i = 0; i < movers.length; i++) {
-        movers[i].style.transform = "translateX( " + items_left[i] + "px)";
+        movers[i].style.transform = "translateX( " + Math.floor(100 * phaseCalc[i % 5]) + "px)";
     }
 
 
@@ -515,6 +498,8 @@ function updatePositions() {
 }
 
 
+// Uses Paul's approach to use requestAnimationFrame instead of scroll
+// https://www.html5rocks.com/en/tutorials/speed/animations/
 window.addEventListener('scroll', onScroll, false);
 
 function onScroll() {
@@ -535,6 +520,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var s = 256;
     var movingPizzas1 = document.querySelector("#movingPizzas1");
     var elem;
+    // 40 pizzas are only visible on the screen
     for (var i = 0; i < 40; i++) {
         elem = document.createElement('img');
         elem.className = 'mover';
@@ -542,6 +528,8 @@ document.addEventListener('DOMContentLoaded', function () {
         elem.style.height = "100px";
         elem.style.width = "73.333px";
         elem.basicLeft = (i % cols) * s;
+        // Calculate left because in updatePositions function we will use translateX to avoid re-paint
+        elem.style.left = Math.floor(elem.basicLeft + 100 * (Math.sin(i % 6))) + 'px';
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
         movingPizzas1.appendChild(elem);
     }
