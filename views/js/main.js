@@ -16,6 +16,10 @@
  cameron *at* udacity *dot* com
  */
 
+var movers = [];
+var latestKnownScrollY = 0;
+var ticking = false;
+
 // As you may have realized, this website randomly generates pizzas.
 // Here are arrays of all possible pizza ingredients.
 var pizzaIngredients = {};
@@ -484,17 +488,19 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
+    ticking = false;
+    var currentScrollY = latestKnownScrollY;
     frame++;
     window.performance.mark("mark_start_frame");
 
-    var items = document.querySelectorAll('.mover');
+
     var items_left = [];
-    for (var i = 0; i < items.length; i++) {
-        var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
-        items_left[i] = items[i].basicLeft + 100 * phase + 'px';
+    for (var i = 0; i < movers.length; i++) {
+        var phase = Math.sin((currentScrollY / 1250) + (i % 5));
+        items_left[i] = movers[i].basicLeft + 100 * phase;
     }
-    for (i = 0; i < items.length; i++) {
-        items[i].style.left = items_left[i];
+    for (i = 0; i < movers.length; i++) {
+        movers[i].style.transform = "translateX( " + items_left[i] + "px)";
     }
 
 
@@ -508,22 +514,38 @@ function updatePositions() {
     }
 }
 
-// runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
+
+window.addEventListener('scroll', onScroll, false);
+
+function onScroll() {
+    latestKnownScrollY = window.scrollY;
+    requestTick();
+}
+
+function requestTick() {
+    if(!ticking) {
+        requestAnimationFrame(updatePositions);
+    }
+    ticking = true;
+}
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function () {
     var cols = 8;
     var s = 256;
-    for (var i = 0; i < 200; i++) {
-        var elem = document.createElement('img');
+    var movingPizzas1 = document.querySelector("#movingPizzas1");
+    var elem;
+    for (var i = 0; i < 40; i++) {
+        elem = document.createElement('img');
         elem.className = 'mover';
         elem.src = "images/pizza.png";
         elem.style.height = "100px";
         elem.style.width = "73.333px";
         elem.basicLeft = (i % cols) * s;
         elem.style.top = (Math.floor(i / cols) * s) + 'px';
-        document.querySelector("#movingPizzas1").appendChild(elem);
+        movingPizzas1.appendChild(elem);
     }
+
+    movers = document.getElementsByClassName('mover');
     updatePositions();
 });
